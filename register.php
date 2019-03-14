@@ -37,5 +37,5 @@ if (!$result) {
     exit;
 }
 
-//переадресация
+//переадресация на страницу
 header('location: /login-form.php'); exit;
