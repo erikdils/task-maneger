@@ -13,7 +13,7 @@ foreach ($_POST as $input) {
 }
 
 //подготовка и выполнение запроса к БД проверка человека
-$pdo = new PDO('mysql:host=localhost;dbname=task-maneger', 'root', 'mesql');
+$pdo = new PDO('mysql:host=localhost; dbname=maneger', 'root', 'mysql');
 $sql = 'SELECT id FROM user WHERE email=:email';
 $statement = $pdo->prepare($sql);
 $statement->execute([':email' => $email]);
@@ -26,7 +26,7 @@ if ($user) {
 
 
 // добовление в БД
-$sql = 'INSERT INTO users(username, email, password) VALUE (:udername, :email, :password)';
+$sql = 'INSERT INTO users(username, email, password) VALUE (:username, :email, :password)';
 $statement = $pdo->prepare($sql);
 //password hash
 $_POST['password'] = md5($_POST['password']);
@@ -38,4 +38,4 @@ if (!$result) {
 }
 
 //переадресация на страницу
-header('location: /login-form.php'); exit;
+header('location: /untitled/github/task-maneger/login-form.php'); exit;
