@@ -50,8 +50,9 @@ if ($task) {
 
 
 // Добовление в БД
-$sql = 'INSERT INTO task(title, description) VALUE (:title, :description)';
+$sql = 'INSERT INTO task(title, description, img) VALUE (:title, :description, :img)';
 $statement = $pdo->prepare($sql);
+$_POST['img'];
 $result = $statement->execute($_POST);
 if (!$result) {
     $erorMessage = 'Ошибка Добовления';
