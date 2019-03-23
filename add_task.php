@@ -1,64 +1,36 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ErnesT
- * Date: 2019-03-20
- * Time: 22:34
- */
-
-// получение данных из $_POST
+session_start();
+if(!isset($_SESSION['user_id'])) {
+    header('Location: /login-form.php');
+    exit;
+}
+//получение данных из $_POST и $_FILES
 $title = $_POST['title'];
 $description = $_POST['description'];
-$img = $_POST['img'];
-
-
+$img = $_FILES['img'];
 //проверка данных
-foreach ($_POST as $input) {
-    if (empty($input)) {
+foreach($_POST as $input) {
+    if(empty($input)) {
         include 'errors.php';
         exit;
     }
 }
-
-$upload_img = './assets/img'; // Папка, куда будут загружаться файлы
-$upload_img = $_FILES['img']['name']; // В переменную $filename заносим имя файла
-
-//$filetypes = array('.jpg','.gif','.bmp','.png'); // Типы файлов
-//$max_filesize = 524288; // Максимальный размер файла в байтах (в данном случае он равен 0.5 Мб)
-
-if (move_uploaded_file($_FILES['img']['tmp_name'], $upload_img)) {
-    // Подтверждает
-    echo "The file ". basename( $_FILES['uploadedfile']['name']). "Картинка была добавлена в каталог.";
-} else {
-    //Ошибка
-    echo "Проблема с загрузкой файла.";
+//картинка не загружена
+if($image['error'] === 4) {
+    $errorMessage = 'Загрузите картинку';
+    include 'errors.php';
+    exit;
 }
-
-
-
+//загрузка картинки в папку uploads
+move_uploaded_file($img['tmp_name'], 'assets/img/' . $img['name']);
 //подготовка и выполнение запроса к БД
 $pdo = new PDO('mysql:host=localhost; dbname=maneger', 'root', 'mysql');
+$sql = "INSERT INTO task (title, description, img, user_id) VALUES (:title, :description, :img, :user_id)";
 $statement = $pdo->prepare($sql);
-
-$task = $statement->fetchColumn();
-if ($task) {
-    $erorMessage = 'Такая задача уже существует';
-    include 'errors.php';
-    exit;
-}
-
-
-
-// Добовление в БД
-$sql = 'INSERT INTO task(title, description, img) VALUE (:title, :description, :img)';
-$statement = $pdo->prepare($sql);
-$_POST['img'];
-$result = $statement->execute($_POST);
-if (!$result) {
-    $erorMessage = 'Ошибка Добовления';
-    include 'errors.php';
-    exit;
-}
-
-//переадресация на страницу
-header('location: /untitled/github/task-maneger/index.php'); exit;
+$r = $statement->execute([
+    ":title"	=>	$title,
+    ":description"	=>	$description,
+    ":img"	=>	$img['name'],
+    ":user_id"	=>	$_SESSION['user_id']
+]);
+header('Location: /untitled/github/task-maneger/index.php');

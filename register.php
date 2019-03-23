@@ -14,12 +14,14 @@ foreach ($_POST as $input) {
 
 //подготовка и выполнение запроса к БД проверка человека
 $pdo = new PDO('mysql:host=localhost; dbname=maneger', 'root', 'mysql');
-$sql = 'SELECT id FROM user WHERE email=:email';
+$sql = 'SELECT id FROM users WHERE email=:email';
 $statement = $pdo->prepare($sql);
 $statement->execute([':email' => $email]);
+
+//проверка email
 $user = $statement->fetchColumn();
 if ($user) {
-    $erorMessage = 'Пользователь с таким email уже существует';
+    $errorMessage = 'Пользователь с таким email уже существует';
     include 'errors.php';
     exit;
 }
@@ -28,11 +30,12 @@ if ($user) {
 // добовление в БД
 $sql = 'INSERT INTO users(username, email, password) VALUE (:username, :email, :password)';
 $statement = $pdo->prepare($sql);
+
 //password hash
-$_POST['password'] = md5($_POST['password']);
+$_POST['password'] = md5($_POST['password']);  // md5 - шифровка пароля
 $result = $statement->execute($_POST);
 if (!$result) {
-    $erorMessage = 'Ошиька Регистрации';
+    $erorMessage = 'Ошибка Регистрации';
     include 'errors.php';
     exit;
 }

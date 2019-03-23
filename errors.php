@@ -17,12 +17,15 @@
 
   <body>
     <div class="container text-center mt-5">
-        <?php if (isset($errorMessage)):?>
-        <p><?php echo $errorMessage;?></p>
-        <?php else: ?>
-      <p>Заполните все поля.</p>
-        <?php endif;?>
-      <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">Назад</a>
+        <div class="container text-center mt-5">
+            <!-------Вывод ошибки------>
+            <?php if(isset($errorMessage)):?>
+                <p><?php echo $errorMessage;?></p>
+            <?php else: ?>
+                <p>Заполните все поля.</p>
+            <?php endif;?>
+
+            <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">Назад</a>
     </div>
   </body>
 </html>
