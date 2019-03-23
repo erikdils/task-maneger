@@ -2,14 +2,16 @@
 <?php
 session_start();
 if(!isset($_SESSION['user_id'])) {
-    header('Location: /login-form.php');
+    header('Location: /untitled/github/task-maneger/login-form.php');
     exit;
 }
 
-$pdo = new PDO('mysql:host=localhost; dbname=maneger', 'root', 'mysql'); // подключаемся к БД
 
-$statement = $pdo->prepare("SELECT * FROM task"); // запрос в БД
-$statement-> execute(); // Выполняет данную sql true || false
+$pdo = new PDO('mysql:host=localhost; dbname=maneger', 'root', 'mysql'); // подключаемся к БД
+$sql = 'SELECT * FROM task WHERE user_id=:user_id'; // запрос в БД  конкретного пользователя
+//$statement = $pdo->prepare("SELECT * FROM task"); // запрос в БД всех задач пользователей
+$statement = $pdo->prepare($sql);
+$statement-> execute([':user_id' => $_SESSION['user_id']]); // Выполняет данную sql true || false
 $task = $statement->fetchAll(PDO::FETCH_ASSOC); //fetchAll получить все данные
 //var_dump($task); die;
 
@@ -40,7 +42,7 @@ $task = $statement->fetchAll(PDO::FETCH_ASSOC); //fetchAll получить вс
                 <div class="col-sm-4 offset-md-1 py-4">
                     <h4 class="text-white"><?= $_SESSION['user_id'] ?></h4>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">Выйти</a></li>
+                        <li><a href="exit.php" class="text-white">Выйти</a></li>
                     </ul>
                 </div>
             </div>
@@ -63,7 +65,7 @@ $task = $statement->fetchAll(PDO::FETCH_ASSOC); //fetchAll получить вс
 
     <section class="jumbotron text-center">
         <div class="container">
-            <h1 class="jumbotron-heading">Проект Task-manager</h1>
+            <h1 class="jumbotron-heading">Task-manager</h1>
             <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
             <p>
                 <a href="create-form.php" class="btn btn-primary my-2">Добавить запись</a>
